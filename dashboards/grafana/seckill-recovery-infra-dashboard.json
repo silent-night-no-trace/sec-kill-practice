@@ -1,0 +1,184 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "Prometheus",
+      "description": "Prometheus datasource for seckill metrics",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__requires": [
+    {"type": "grafana", "id": "grafana", "name": "Grafana", "version": "10.0.0"},
+    {"type": "datasource", "id": "prometheus", "name": "Prometheus", "version": "1.0.0"},
+    {"type": "panel", "id": "stat", "name": "Stat", "version": ""},
+    {"type": "panel", "id": "timeseries", "name": "Time series", "version": ""}
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {"type": "grafana", "uid": "-- Grafana --"},
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "unit": "short"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_redis_reserve_degraded{application=\"$application\",env=~\"$env\"}", "instant": true, "legendFormat": "degraded", "range": false, "refId": "A"}
+      ],
+      "title": "Redis Reserve Degraded",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "orange", "value": 1}, {"color": "red", "value": 5}]}, "unit": "short"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 6, "x": 6, "y": 0},
+      "id": 2,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_redis_compensation_tasks{application=\"$application\",env=~\"$env\",status=\"pending\"}", "instant": true, "legendFormat": "pending", "range": false, "refId": "A"}
+      ],
+      "title": "Pending Compensation Tasks",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "unit": "short"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0},
+      "id": 3,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_redis_compensation_tasks{application=\"$application\",env=~\"$env\",status=\"exhausted\"}", "instant": true, "legendFormat": "exhausted", "range": false, "refId": "A"}
+      ],
+      "title": "Exhausted Compensation Tasks",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "fieldConfig": {"defaults": {"color": {"mode": "thresholds"}, "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "red", "value": 1}]}, "unit": "short"}, "overrides": []},
+      "gridPos": {"h": 5, "w": 6, "x": 18, "y": 0},
+      "id": 4,
+      "options": {"colorMode": "background", "graphMode": "none", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_rabbitmq_queue_depth{application=\"$application\",env=~\"$env\",queue=\"dead_letter\"}", "instant": true, "legendFormat": "dlq", "range": false, "refId": "A"}
+      ],
+      "title": "DLQ Depth",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 5},
+      "id": 5,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_rabbitmq_queue_depth{application=\"$application\",env=~\"$env\",queue=\"main\"}", "legendFormat": "main depth", "range": true, "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_rabbitmq_queue_depth{application=\"$application\",env=~\"$env\",queue=\"dead_letter\"}", "legendFormat": "dlq depth", "range": true, "refId": "B"},
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_rabbitmq_queue_consumers{application=\"$application\",env=~\"$env\",queue=\"main\"}", "legendFormat": "main consumers", "range": true, "refId": "C"}
+      ],
+      "title": "RabbitMQ Main/DLQ Depth & Consumers",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "unit": "ops"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 5},
+      "id": 6,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "sum by (outcome) (increase(seckill_redis_compensation_total{application=\"$application\",env=~\"$env\"}[5m]))", "legendFormat": "{{outcome}}", "range": true, "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "sum by (status) (seckill_redis_compensation_tasks{application=\"$application\",env=~\"$env\"})", "legendFormat": "tasks {{status}}", "range": true, "refId": "B"}
+      ],
+      "title": "Redis Compensation Outcomes & Tasks",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "unit": "ops"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 13},
+      "id": 7,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "increase(seckill_redis_compensation_retry_processed_total{application=\"$application\",env=~\"$env\"}[5m])", "legendFormat": "processed", "range": true, "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "increase(seckill_redis_compensation_retry_resolved_total{application=\"$application\",env=~\"$env\"}[5m])", "legendFormat": "resolved", "range": true, "refId": "B"},
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "increase(seckill_redis_compensation_retry_failed_total{application=\"$application\",env=~\"$env\"}[5m])", "legendFormat": "failed", "range": true, "refId": "C"},
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "increase(seckill_redis_compensation_retry_exhausted_total{application=\"$application\",env=~\"$env\"}[5m])", "legendFormat": "exhausted", "range": true, "refId": "D"}
+      ],
+      "title": "Compensation Retry Results (5m Increase)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "fieldConfig": {"defaults": {"color": {"mode": "palette-classic"}, "unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 13},
+      "id": 8,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}, "tooltip": {"mode": "multi"}},
+      "targets": [
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_redis_reserve_fallback_recent{application=\"$application\",env=~\"$env\"}", "legendFormat": "recent fallback", "range": true, "refId": "A"},
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "seckill_redis_reserve_degraded{application=\"$application\",env=~\"$env\"}", "legendFormat": "degraded", "range": true, "refId": "B"},
+        {"datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}, "editorMode": "code", "expr": "increase(seckill_rabbitmq_queue_inspect_errors_total{application=\"$application\",env=~\"$env\"}[5m])", "legendFormat": "queue inspect errors", "range": true, "refId": "C"}
+      ],
+      "title": "Redis Fallback & MQ Inspect Errors",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["seckill", "prometheus", "recovery", "infrastructure"],
+  "templating": {
+    "list": [
+      {
+        "current": {"selected": true, "text": "seckill", "value": "seckill"},
+        "hide": 0,
+        "includeAll": false,
+        "label": "application",
+        "multi": false,
+        "name": "application",
+        "options": [],
+        "query": "label_values(seckill_order_persist_total, application)",
+        "refresh": 2,
+        "type": "query",
+        "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}
+      },
+      {
+        "current": {"selected": true, "text": "All", "value": ".*"},
+        "hide": 0,
+        "includeAll": true,
+        "label": "env",
+        "multi": false,
+        "name": "env",
+        "options": [],
+        "query": "label_values(seckill_order_persist_total{application=\"$application\"}, env)",
+        "refresh": 2,
+        "type": "query",
+        "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"}
+      }
+    ]
+  },
+  "time": {"from": "now-6h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Seckill Recovery & Infrastructure",
+  "uid": "seckill-recovery-infra",
+  "version": 1,
+  "weekStart": ""
+}

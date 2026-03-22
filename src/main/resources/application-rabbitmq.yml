@@ -1,0 +1,31 @@
+seckill:
+  rabbitmq:
+    enabled: true
+    exchange: seckill.order.exchange
+    queue: seckill.order.queue
+    routing-key: seckill.order.create
+    dead-letter-exchange: seckill.order.dlx
+    dead-letter-queue: seckill.order.queue.dlq
+    dead-letter-routing-key: seckill.order.dead
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        acknowledge-mode: manual
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          initial-interval: 1000
+          max-attempts: 3
+          multiplier: 2
+          max-interval: 5000
+
+management:
+  health:
+    rabbit:
+      enabled: true

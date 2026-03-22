@@ -1,0 +1,308 @@
+# Grafana unified alerting provisioning draft.
+# Replace datasourceUid values if your Grafana Prometheus datasource uses a different UID.
+# This draft is intentionally scoped to the `seckill` service and is best treated as a
+# single-environment starting point. If one Prometheus serves multiple envs, duplicate
+# the rule groups per env (or add env-specific selectors) instead of importing this file unchanged.
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: seckill-alerts
+    folder: Seckill
+    interval: 1m
+    rules:
+      - uid: seckill-redis-degraded
+        title: Seckill Redis reserve degraded
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              datasource:
+                type: prometheus
+                uid: prometheus
+              editorMode: code
+              expr: seckill_redis_reserve_degraded{application="seckill"}
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    params: [0]
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              refId: C
+        noDataState: NoData
+        execErrState: Alerting
+        for: 3m
+        annotations:
+          summary: Redis reserve path is degraded
+          description: Redis reserve fallback remained degraded for more than 3 minutes.
+        labels:
+          severity: critical
+          service: seckill
+      - uid: seckill-dlq-depth
+        title: Seckill DLQ has backlog
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 120
+              to: 0
+            datasourceUid: prometheus
+            model:
+              datasource:
+                type: prometheus
+                uid: prometheus
+              editorMode: code
+              expr: seckill_rabbitmq_queue_depth{application="seckill",queue="dead_letter"}
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    params: [0]
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              refId: C
+        noDataState: NoData
+        execErrState: Alerting
+        for: 2m
+        annotations:
+          summary: Dead-letter queue backlog detected
+          description: Dead-letter queue depth has remained above zero for more than 2 minutes.
+        labels:
+          severity: critical
+          service: seckill
+      - uid: seckill-comp-exhausted
+        title: Seckill compensation tasks exhausted
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              datasource:
+                type: prometheus
+                uid: prometheus
+              editorMode: code
+              expr: seckill_redis_compensation_tasks{application="seckill",status="exhausted"}
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    params: [0]
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              refId: C
+        noDataState: NoData
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          summary: Compensation tasks exhausted
+          description: At least one Redis compensation task has reached EXHAUSTED state.
+        labels:
+          severity: critical
+          service: seckill
+      - uid: seckill-async-pending
+        title: Seckill async pending backlog high
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              datasource:
+                type: prometheus
+                uid: prometheus
+              editorMode: code
+              expr: seckill_async_requests{application="seckill",status="pending"}
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    params: [20]
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              refId: C
+        noDataState: NoData
+        execErrState: Alerting
+        for: 10m
+        annotations:
+          summary: Async pending backlog is high
+          description: Pending async requests stayed above 20 for 10 minutes.
+        labels:
+          severity: warning
+          service: seckill
+      - uid: seckill-http-p99
+        title: Seckill HTTP p99 latency high
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 300
+              to: 0
+            datasourceUid: prometheus
+            model:
+              datasource:
+                type: prometheus
+                uid: prometheus
+              editorMode: code
+              expr: histogram_quantile(0.99, sum by (le) (rate(http_server_requests_seconds_bucket{application="seckill",uri!~"/actuator.*"}[5m])))
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: A
+          - refId: B
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+              refId: B
+          - refId: C
+            relativeTimeRange:
+              from: 0
+              to: 0
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    params: [1]
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: [B]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              refId: C
+        noDataState: NoData
+        execErrState: Alerting
+        for: 5m
+        annotations:
+          summary: HTTP p99 latency is high
+          description: HTTP p99 latency stayed above 1 second for 5 minutes.
+        labels:
+          severity: warning
+          service: seckill

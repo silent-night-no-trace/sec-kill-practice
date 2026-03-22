@@ -1,0 +1,13 @@
+seckill:
+  redis:
+    enabled: true
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.actuate.autoconfigure.data.redis.RedisHealthContributorAutoConfiguration
+      - org.springframework.boot.actuate.autoconfigure.data.redis.RedisReactiveHealthContributorAutoConfiguration
+  data:
+    redis:
+      host: localhost
+      port: 6379
