@@ -32,6 +32,7 @@ All notable changes to this project are documented in this file.
 - Grafana alert-rules draft: `dashboards/grafana/alerting/seckill-alert-rules.yaml`.
 - Contributing guide: `CONTRIBUTING.md`.
 - Operations guide: `docs/operations.md`.
+- Architecture guide: `docs/architecture.md`.
 - Load testing guide: `docs/load-test.md`.
 - Engineering conventions guide: `docs/engineering-conventions.md`.
 - Generic JMeter plan: `scripts/jmeter/seckill-generic-plan.jmx`.

@@ -19,6 +19,7 @@
 11. `dashboards/grafana/alerting/seckill-alert-rules.yaml`：Grafana alert-rules YAML 草稿。
 12. `CONTRIBUTING.md`：贡献流程、开发约定入口与验证要求。
 13. `docs/operations.md`：运行、排障、值班关注点。
+14. `docs/architecture.md`：系统架构、关键链路与组件职责。
 
 ## 2. 按目标找文档
 
@@ -72,6 +73,10 @@
 
 - 看 `docs/operations.md`
 
+### 2.13 想快速理解系统整体结构和链路
+
+- 看 `docs/architecture.md`
+
 ## 3. 当前文档清单
 
 - `README.md`：项目总览、接口示例、监控端点说明。
@@ -86,6 +91,7 @@
 - `dashboards/grafana/alerting/seckill-alert-rules.yaml`：Grafana alert-rules YAML 草稿。
 - `CONTRIBUTING.md`：贡献流程与本地验证要求。
 - `docs/operations.md`：运行、排障与值班手册。
+- `docs/architecture.md`：系统架构、关键链路与基础设施角色说明。
 - `scripts/jmeter/README.md`：JMeter 压测文件使用说明。
 - `scripts/jmeter/seckill-generic-plan.jmx`：通用 JMeter 压测计划。
 
@@ -93,6 +99,5 @@
 
 后续如果继续往生产化演进，建议优先增加这几类文档：
 
-1. `docs/architecture.md`：系统架构图、核心链路说明、依赖关系。
-2. `docs/release-playbook.md`：发布检查项、回滚策略、压测前后核对项。
-3. `docs/security.md`：入口防护策略、限流边界和安全注意事项。
+1. `docs/release-playbook.md`：发布检查项、回滚策略、压测前后核对项。
+2. `docs/security.md`：入口防护策略、限流边界和安全注意事项。

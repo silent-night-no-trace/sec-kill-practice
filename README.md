@@ -374,6 +374,7 @@ curl.exe -X POST "http://localhost:8080/api/seckill/requests/reconcile?threshold
 - `docs/index.md`：项目文档导航与推荐阅读顺序。
 - `CONTRIBUTING.md`：贡献流程、开发与验证要求。
 - `CHANGELOG.md`：阶段变更记录与迭代摘要。
+- `docs/architecture.md`：系统架构、关键链路与组件职责。
 - `docs/phase-optimization.md`：阶段性优化记录、当前收益和后续建议。
 - `docs/observability.md`：监控端点、业务指标、Prometheus 查询与排查思路。
 - `docs/grafana-promql-templates.md`：Grafana 面板建议与 PromQL 告警模板。
